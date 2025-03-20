@@ -1,0 +1,9 @@
+@startuml C4_Contexto_GatoSQL
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(usuario, "Usuario", "Jugador del juego del gato y el ratón")
+System(gatoSQL, "GatoSQL", "Juego del gato y el ratón con conexión a base de datos")
+
+Rel(usuario, gatoSQL, "Juega")
+
+@enduml

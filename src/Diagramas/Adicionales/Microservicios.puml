@@ -1,0 +1,34 @@
+@startuml C4_Gato_Microservicios
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT()
+
+Person(jugador, "Jugador", "Usuario que juega el juego del gato y ratón")
+
+System_Boundary(game_system, "Sistema del Juego del Gato") {
+    Container(web_ui, "Interfaz Web", "React (Futuro)", "Permite a los jugadores interactuar con el juego")
+    Container(mobile_app, "App Móvil", "Flutter (Futuro)", "Versión móvil del juego")
+
+    Container(game_service, "Servicio de Partidas", "Spring Boot", "Gestiona la lógica del juego")
+    Container(player_service, "Servicio de Jugadores", "Spring Boot", "Maneja la información de los jugadores")
+    Container(persistence_service, "Servicio de Persistencia", "Spring Boot", "Encargado del acceso a la base de datos")
+
+    ContainerDb(mysql_db, "Base de Datos MySQL", "MySQL", "Almacena información de partidas y jugadores")
+    ContainerDb(sqlite_db, "Base de Datos SQLite", "SQLite", "Opción alternativa para almacenamiento local")
+}
+
+' Relaciones
+jugador --> web_ui : "Juega desde la web"
+jugador --> mobile_app : "Juega desde la app"
+
+web_ui --> game_service : "Envia movimientos"
+mobile_app --> game_service : "Envia movimientos"
+
+game_service --> player_service : "Solicita información del jugador"
+game_service --> persistence_service : "Guarda estado de la partida"
+
+persistence_service --> mysql_db : "Guarda y recupera datos"
+persistence_service --> sqlite_db : "Alternativa de almacenamiento local"
+
+@enduml
+

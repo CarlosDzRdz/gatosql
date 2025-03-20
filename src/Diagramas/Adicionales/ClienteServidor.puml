@@ -1,0 +1,21 @@
+@startuml C4_ClienteServidor
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(cliente, "Usuario", "Interactúa con la aplicación web o móvil")
+
+System_Boundary(servicio, "Sistema Web") {
+    Container(clienteWeb, "Cliente Web", "React", "Interfaz gráfica para el usuario")
+    Container(clienteMovil, "Cliente Móvil", "Flutter", "Aplicación móvil del usuario")
+    Container(servidor, "Backend", "Spring Boot", "Procesa solicitudes y maneja la lógica del negocio")
+    ContainerDb(database, "Base de Datos", "MySQL", "Almacena información del sistema")
+}
+
+
+cliente -> clienteWeb : "Usa el navegador"
+cliente -> clienteMovil : "Usa la app"
+clienteWeb -> servidor : "Envía solicitudes REST"
+clienteMovil -> servidor : "Envía solicitudes REST"
+servidor -> database : "Lee y escribe datos"
+
+@enduml

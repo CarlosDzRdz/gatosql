@@ -1,7 +1,7 @@
 @startuml GATOSQL
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-Person(personAlias, "Usuario", "El jugador")
+Container(app, "Aplicación de Consola", "Java", "Interfaz de usuario e implementación del juego")
 
 package "Capa presentacion" as PRESENTACION {
   component UI as "Interface de usuario"
@@ -60,6 +60,6 @@ Rel(DBFACTORY, JMYSQL, "Crea")
 Rel(DBFACTORY, JSQLITE, "Crea por singlenton")
 Rel(DBFACTORY, JFIREBASE, "Crea por singlenton")
 
-Rel(personAlias, UI, "Play")
+Rel(app, UI, "Play")
 
 @enduml

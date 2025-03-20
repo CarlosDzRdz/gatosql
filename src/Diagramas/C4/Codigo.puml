@@ -1,0 +1,95 @@
+@startuml C4_GatoSQL
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+package "presentacion" {
+  class Main {
+    + static void main(String[] args)
+  }
+
+  class Tablero {
+    - char[][] tablero
+    - int turnos
+    - List<Observer> observadores
+    + void registrarObservador(Observer o)
+    + void notificarObservadores()
+    + boolean verificarMovimiento(int x, int y)
+    + boolean hayGanador()
+  }
+
+  interface Observer {
+    + void actualizar()
+  }
+
+  class Jugador implements Observer {
+    - String nombre
+    - char simbolo
+    + void actualizar()
+  }
+
+  ' Relaciones dentro de presentación
+  Main --> Tablero
+  Jugador -|> Observer
+  Tablero -> Observer
+  Tablero "1" o-- "*" Jugador : "Observa cambios"
+}
+
+package "negocio" {
+  class LogDb {
+    - Conn conexion
+    + void guardarEstadoJuego(Tablero tablero)
+  }
+
+  ' Relación dentro de negocio
+  Tablero --> LogDb : "Guarda estado"
+  LogDb ..|> presentacion.Observer : "Implementa Observer"
+}
+
+package "DAO" {
+  class Dao {
+    + void insertarDatos(Tablero tablero)
+  }
+
+  package "factory" {
+    class ConnFactory {
+      + static Conn getConexion(String tipoBD)
+    }
+
+    interface Conn {
+      + Connection getConnection()
+    }
+
+    class MysqlConnectionFactory implements ConnFactory{
+      + static Conn getConexion()
+    }
+
+    class SqliteConnectionFactory implements ConnFactory {
+      + static Conn getConexion()
+    }
+
+    class JMysql implements Conn {
+        + void insertarDatos(Tablero tablero)
+    }
+
+    class JSqlite implements Conn {
+      + void insertarDatos(Tablero tablero)
+    }
+
+    enum Database {
+        JMysql, JSqlite
+    }
+  }
+
+  ' Relaciones dentro de DAO
+  LogDb --> Dao : "Accede a la BD"
+  Dao --> factory.ConnFactory : "Selecciona conexión"
+
+  ' Relaciones dentro de factory
+  factory.MysqlConnectionFactory --> JMysql : "Crea conexión MySQL"
+  factory.SqliteConnectionFactory --> JSqlite : "Crea conexión SQLite"
+
+  Dao ..|> Database : "Permisos de lectura"
+}
+
+note "Las líneas (flechas) punteadas representan la implementación de una clase en otra, por ejemplo: LogDb implementa Observer" as Nota1
+@enduml
+

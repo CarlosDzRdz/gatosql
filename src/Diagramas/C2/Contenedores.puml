@@ -1,0 +1,15 @@
+@startuml C4_Contenedores_GatoSQL
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(usuario, "Usuario", "Jugador del juego del gato y el ratón")
+
+System_Boundary(gatoSQL, "GatoSQL") {
+    Container(app, "Aplicación de Consola", "Java", "Interfaz de usuario e implementación del juego")
+    ContainerDb(db, "Base de Datos", "MySQL", "Almacena el estado del juego y puntuaciones")
+}
+
+Rel(usuario, app, "Juega")
+Rel(app, db, "Lee y escribe datos")
+
+@enduml
+
